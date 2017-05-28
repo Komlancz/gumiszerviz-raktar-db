@@ -1,0 +1,1 @@
+# gumiszerviz-raktar-db
