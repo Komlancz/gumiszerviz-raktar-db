@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @RestController
-public class SetupDB {
+public class SetupDBController {
 
 
     @Autowired
@@ -34,14 +34,14 @@ public class SetupDB {
     private PaidState paidState;
     private States states;
 
-    private SetupDB(CarInfoRepository carInfoRepository, CompanyRepository companyRepository, PaidStateRepository paidStateRepository, StatesRepository statesRepository){
+    private SetupDBController(CarInfoRepository carInfoRepository, CompanyRepository companyRepository, PaidStateRepository paidStateRepository, StatesRepository statesRepository){
         this.carInfoRepository = carInfoRepository;
     }
 
     @RequestMapping(value = "/update-table", method = RequestMethod.GET)
     public void findAllCarInfo(){
         String csvFile = "data-file.csv";
-        File file = new File("/home/komlancz/Java/RaktarKezeles/src/main/resources/static/data-file.csv");
+        File file = new File("src/main/resources/static/data-file.csv");
         String filePath = file.getAbsolutePath();
         String line = "";
         String cvsSplitBy = ",";
@@ -73,8 +73,7 @@ public class SetupDB {
                     carInfo.setState(statesRepository.getOne(3));
                 } else if ("p".equals(data[1])){
                     carInfo.setState(statesRepository.getOne(2));
-                }
-                carInfo.setState(statesRepository.getOne(1));
+                } else carInfo.setState(statesRepository.getOne(1));
 
                 // set company info
                 company.setName(data[3]);
@@ -83,12 +82,11 @@ public class SetupDB {
                 companyRepository.save(company);
 
                 // set paid state
-                if ("0".equals(data[4])){
-                    carInfo.setPaidStateId(paidStateRepository.findOne(1));
-                }
-                carInfo.setPaidStateId(paidStateRepository.findOne(2));
+                if ("0".equals(data[4])) carInfo.setPaidStateId(paidStateRepository.findOne(1));
+                else carInfo.setPaidStateId(paidStateRepository.findOne(2));
                 // set carInfo
-                carInfo.setLicencePlate(data[0]);
+                String plate = data[0].replace(" ", "");
+                carInfo.setLicencePlate(plate);
                 carInfo.setWinterSize(data[7]);
                 carInfo.setWinterBrand(data[8]);
                 carInfo.setSummerSize(data[9]);
