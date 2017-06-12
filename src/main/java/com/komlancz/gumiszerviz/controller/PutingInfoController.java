@@ -9,11 +9,15 @@ import com.komlancz.gumiszerviz.repository.CompanyRepository;
 import com.komlancz.gumiszerviz.repository.PaidStateRepository;
 import com.komlancz.gumiszerviz.repository.StatesRepository;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PutingInfoController {
+    private static final Logger logger = LoggerFactory.getLogger(PutingInfoController.class);
 
     @Autowired
     CompanyRepository companyRepository;
@@ -46,14 +50,38 @@ public class PutingInfoController {
         int carIdNum = Integer.parseInt(carId);
 
         if (!carId.equals("") && !carId.isEmpty()){
-            CarInfo car = carInfoRepository.getOne(carIdNum);
-            if (car != null){
-                carInfoRepository.save(saveDetails(body, car));
-                carInfoRepository.delete(carIdNum);
-                retv = "SUCCESS";
+            try {
+                CarInfo car = carInfoRepository.getOne(carIdNum);
+                if (car != null){
+                    carInfoRepository.save(saveDetails(body, car));
+                    carInfoRepository.delete(carIdNum);
+                    logger.info("Car info has been updated by ID: " + carIdNum);
+                    retv = "SUCCESS";
+                }
+            }catch (EmptyResultDataAccessException exception){
+                logger.warn("Can not find this ID in DB: " + carIdNum + " | " + exception);
             }
         }
      return retv;
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public String deleteFromDbById(@RequestBody String carId){
+        JSONObject body = new JSONObject(carId);
+        Integer carIdNum = body.getInt("carId");
+        String retV = "ERROR";
+        if (carId != null && carIdNum > 0){
+            try {
+                CarInfo carInfo = carInfoRepository.getOne(carIdNum);
+                carInfoRepository.delete(carIdNum);
+                logger.info("Car info has been deleted by ID: " + carIdNum + " " + carInfo);
+                retV = "SUCCESS";
+            }
+            catch (EmptyResultDataAccessException exception){
+                logger.warn("Can not find this ID in DB: " + carIdNum + " | " + exception);
+            }
+        }
+        return retV;
     }
 
     private CarInfo saveDetails(String data, CarInfo newCar){
