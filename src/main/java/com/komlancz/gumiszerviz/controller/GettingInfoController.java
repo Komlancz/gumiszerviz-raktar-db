@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class ServiceController {
+public class GettingInfoController {
     @Autowired
     CarInfoRepository carInfoRepository;
 

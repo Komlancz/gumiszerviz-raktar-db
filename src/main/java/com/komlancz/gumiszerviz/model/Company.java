@@ -3,7 +3,6 @@ package com.komlancz.gumiszerviz.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -18,19 +17,14 @@ public class Company implements Serializable{
     @JoinColumn(name = "cegId")
     private Integer companyId;
 
-    @NotNull
     @JoinColumn(name = "nev")
     private String name;
 
     @JoinColumn(name = "cim")
     private String address;
 
-    @NotNull
     @JoinColumn(name = "telefon")
     private String phone;
-
-    @OneToOne(mappedBy = "company")
-    private CarInfo carInfo;
 
     public Integer getCompanyId() {
         return companyId;

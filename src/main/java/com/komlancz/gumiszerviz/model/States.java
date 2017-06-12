@@ -19,10 +19,6 @@ public class States implements Serializable{
     @JoinColumn
     private String stateText;
 
-//    @OneToOne(mappedBy = "state")
-//    private CarInfo carInfo;
-
-
     public Integer getStateId() {
         return stateId;
     }
@@ -38,12 +34,4 @@ public class States implements Serializable{
     public void setStateText(String stateText) {
         this.stateText = stateText;
     }
-
-//    public CarInfo getCarInfo() {
-//        return carInfo;
-//    }
-//
-//    public void setCarInfo(CarInfo carInfo) {
-//        this.carInfo = carInfo;
-//    }
 }
