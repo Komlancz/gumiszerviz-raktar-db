@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
     Company getOneByName(String name);
+    Company getOneByEmail(String email);
 }

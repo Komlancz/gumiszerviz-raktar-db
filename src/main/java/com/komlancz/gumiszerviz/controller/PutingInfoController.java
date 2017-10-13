@@ -1,9 +1,6 @@
 package com.komlancz.gumiszerviz.controller;
 
-import com.komlancz.gumiszerviz.model.CarInfo;
-import com.komlancz.gumiszerviz.model.Company;
-import com.komlancz.gumiszerviz.model.PaidState;
-import com.komlancz.gumiszerviz.model.States;
+import com.komlancz.gumiszerviz.model.*;
 import com.komlancz.gumiszerviz.repository.CarInfoRepository;
 import com.komlancz.gumiszerviz.repository.CompanyRepository;
 import com.komlancz.gumiszerviz.repository.PaidStateRepository;
@@ -15,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 public class PutingInfoController {
     private static final Logger logger = LoggerFactory.getLogger(PutingInfoController.class);
@@ -37,10 +35,12 @@ public class PutingInfoController {
         String retV = "ERROR";
 
         if (!data.isEmpty() && !data.equals("")) {
-            CarInfo newCar = saveDetails(data, null);
+            logger.info("Try to save new car: " + data);
+            CarInfo newCar = saveDetails(data);
             carInfoRepository.save(newCar);
             retV = "SUCCES";
         }
+        logger.info("Saved: " + data);
         return retV;
     }
 
@@ -53,7 +53,7 @@ public class PutingInfoController {
             try {
                 CarInfo car = carInfoRepository.getOne(carIdNum);
                 if (car != null){
-                    carInfoRepository.save(saveDetails(body, car));
+                    carInfoRepository.save(saveDetails(body));
                     carInfoRepository.delete(carIdNum);
                     logger.info("Car info has been updated by ID: " + carIdNum);
                     retv = "SUCCESS";
@@ -69,6 +69,7 @@ public class PutingInfoController {
     public String deleteFromDbById(@RequestBody String carId){
         JSONObject body = new JSONObject(carId);
         Integer carIdNum = body.getInt("carId");
+        logger.info("Try to delete wit id: " + carIdNum);
         String retV = "ERROR";
         if (carId != null && carIdNum > 0){
             try {
@@ -84,23 +85,21 @@ public class PutingInfoController {
         return retV;
     }
 
-    private CarInfo saveDetails(String data, CarInfo newCar){
+    private CarInfo saveDetails(String data){
         JSONObject newCarDetails = new JSONObject(data);
 
-        Company company = companyRepository.getOneByName(newCarDetails.getString("ceg_nev"));
-        if (company == null) {
-            company = new Company();
-            company.setName(newCarDetails.getString("ceg_nev"));
-            companyRepository.save(company);
-        }
+        CarInfo newCar = new CarInfo();
+        Company company = new Company();
+        company.setName(newCarDetails.getString("ceg_nev"));
+        company.setPhone(newCarDetails.getString("phone"));
+        company.setAddress(newCarDetails.getString("address"));
+        company.setEmail(newCarDetails.getString("email"));
+        companyRepository.save(company);
 
         States state = statesRepository.getOneByStateText(newCarDetails.getString("state"));
         PaidState paidState = paidStateRepository.getOneByPaid(newCarDetails.getString("pay_status"));
 
-        if (newCar != null) {
-            newCar = new CarInfo();
-        }
-        newCar.setLicencePlate(newCarDetails.getString("licence_plate"));
+        newCar.setLicencePlate(LicencePlateHandler.handleLicencePlate(newCarDetails.getString("licence_plate")).toUpperCase());
         newCar.setComment(newCarDetails.getString("comment"));
         newCar.setPosition(newCarDetails.getString("position"));
         newCar.setWinterBrand(newCarDetails.getString("winter_brand"));

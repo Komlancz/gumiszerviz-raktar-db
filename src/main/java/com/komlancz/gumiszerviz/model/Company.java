@@ -26,6 +26,17 @@ public class Company implements Serializable{
     @JoinColumn(name = "telefon")
     private String phone;
 
+    @JoinColumn(name = "email")
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Integer getCompanyId() {
         return companyId;
     }

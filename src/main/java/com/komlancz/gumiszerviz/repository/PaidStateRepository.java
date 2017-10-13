@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PaidStateRepository extends JpaRepository<PaidState, Integer> {
-    public PaidState getOneByPaid(String paid);
+    PaidState getOneByPaid(String paid);
 }
