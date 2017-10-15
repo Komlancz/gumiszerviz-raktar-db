@@ -1,11 +1,16 @@
 package com.komlancz.gumiszerviz.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CarInfo implements Serializable {
 
+
+    private static final long serialVersionUID = -8040206495598145050L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer carInfoId;

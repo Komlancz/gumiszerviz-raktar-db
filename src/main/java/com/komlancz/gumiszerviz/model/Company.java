@@ -1,31 +1,41 @@
 package com.komlancz.gumiszerviz.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "nev_ceg")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Company implements Serializable{
 
+
+    private static final long serialVersionUID = -3084925307795293925L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JoinColumn(name = "cegId")
     private Integer companyId;
 
-    @NotNull
     @JoinColumn(name = "nev")
     private String name;
 
     @JoinColumn(name = "cim")
     private String address;
 
-    @NotNull
     @JoinColumn(name = "telefon")
     private String phone;
 
-    @OneToOne(mappedBy = "company")
-    private CarInfo carInfo;
+    @JoinColumn(name = "email")
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public Integer getCompanyId() {
         return companyId;

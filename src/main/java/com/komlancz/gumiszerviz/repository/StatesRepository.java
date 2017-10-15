@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StatesRepository extends JpaRepository<States, Integer> {
+    States getOneByStateText(String stateText);
 }
